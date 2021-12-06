@@ -53,6 +53,7 @@ int main() {
             memset(send_buf,0, sizeof(send_buf));
             close(clnt_sockt);
             printf("send file finish\n");
+            fclose(fd);
             continue;
         }
     }
