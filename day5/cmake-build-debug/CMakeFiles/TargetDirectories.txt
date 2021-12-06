@@ -1,0 +1,3 @@
+/home/wayne/Desktop/coding/xuanyuan/day5/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/wayne/Desktop/coding/xuanyuan/day5/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/wayne/Desktop/coding/xuanyuan/day5/cmake-build-debug/CMakeFiles/day5.dir
