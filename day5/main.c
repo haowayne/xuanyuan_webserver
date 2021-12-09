@@ -6,6 +6,26 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+
+void send_code(char *send_buf,char *response_head,char *content,int clnt_sockt){
+    strcat(send_buf,response_head);
+    strcat(send_buf,content);
+    write(clnt_sockt,send_buf, sizeof(send_buf));
+    memset(send_buf,0, sizeof(send_buf));
+    close(clnt_sockt);
+    printf("send code finish\n");
+}
+
+void send_file(char *send_buf,char *response_head,char *file_buf,FILE *fd,int clnt_sockt){
+    strcat(send_buf,response_head);
+    while(fgets(file_buf,sizeof(send_buf),fd))
+        strcat(send_buf,file_buf);
+    write(clnt_sockt,send_buf, sizeof(send_buf));
+    memset(send_buf,0, sizeof(send_buf));
+    close(clnt_sockt);
+    printf("send file finish\n");
+    fclose(fd);
+}
 int main() {
 
     char *response_head = "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n";
@@ -24,7 +44,7 @@ int main() {
     memset(&serv_addr,0,sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = inet_addr("0.0.0.0");
-    serv_addr.sin_port = htons(10007);
+    serv_addr.sin_port = htons(10008);
     bind(serv_sock,(struct sockaddr*)&serv_addr,sizeof(serv_addr));
     listen(serv_sock,20);
     struct sockaddr_in clnt_addr;
@@ -38,22 +58,10 @@ int main() {
         {
             if(NULL == (fd = fopen("../day5/index.html","r")))
             {
-                strcat(send_buf,response_head);
-                strcat(send_buf,content);
-                write(clnt_sockt,send_buf, sizeof(send_buf));
-                memset(send_buf,0, sizeof(send_buf));
-                close(clnt_sockt);
-                printf("send code finish\n");
+                send_code(send_buf,response_head,content,clnt_sockt);
                 continue;
             }
-            strcat(send_buf,response_head);
-            while(fgets(file_buf,sizeof(send_buf),fd))
-                strcat(send_buf,file_buf);
-            write(clnt_sockt,send_buf, sizeof(send_buf));
-            memset(send_buf,0, sizeof(send_buf));
-            close(clnt_sockt);
-            printf("send file finish\n");
-            fclose(fd);
+            send_file(send_buf,response_head,file_buf,fd,clnt_sockt);
             continue;
         }
     }
